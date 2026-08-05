@@ -1,0 +1,14 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - src
+
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable::#'
+        - '#Property .* has no type specified#'
+
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false

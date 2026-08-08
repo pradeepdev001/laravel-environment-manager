@@ -21,7 +21,7 @@ A secure, enterprise-grade Laravel package to manage `.env` variables through a 
 - **Diff viewer** — compare any two snapshots side-by-side
 - **Import / Export** — `.env`, JSON, and YAML formats with pre-import validation
 - **Environment comparison** — compare Local, Staging, Production side-by-side
-- **Cache management** — auto-runs `config:clear`, `config:cache`, etc. after every save
+- **Cache management** — auto-runs `config:clear`, `config:cache`, etc. after every save, with local-safe defaults
 - **REST API** — full CRUD API with Sanctum auth and rate limiting
 - **Artisan commands** — `list`, `get`, `set`, `delete`, `backup`, `restore`, `compare`, `validate`
 - **Role-based authorization** — Super Admin, Admin, Read Only with configurable permissions
@@ -135,6 +135,7 @@ return [
     'masking_patterns' => ['MY_CUSTOM_*'],
 
     // Cache commands to run after save
+    'run_cache_commands_in_local' => false,
     'cache_commands' => ['config:clear', 'config:cache'],
 
     // Notifications

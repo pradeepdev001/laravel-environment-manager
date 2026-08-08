@@ -26,6 +26,8 @@ class CacheManager
     public function __construct(
         private readonly array $commands,
         private readonly bool $runAfterSave,
+        private readonly bool $runInLocal,
+        private readonly string $appEnv,
     ) {}
 
     /**
@@ -37,6 +39,10 @@ class CacheManager
     public function run(): array
     {
         if (! $this->runAfterSave) {
+            return [];
+        }
+
+        if ($this->appEnv === 'local' && ! $this->runInLocal) {
             return [];
         }
 

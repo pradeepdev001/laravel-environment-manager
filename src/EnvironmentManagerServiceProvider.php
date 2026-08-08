@@ -58,6 +58,8 @@ class EnvironmentManagerServiceProvider extends ServiceProvider
             return new CacheManager(
                 config('environment-manager.cache_commands', []),
                 config('environment-manager.cache_after_save', true),
+                config('environment-manager.run_cache_commands_in_local', false),
+                (string) $app->environment(),
             );
         });
 

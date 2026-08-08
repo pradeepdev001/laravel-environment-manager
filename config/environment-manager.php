@@ -119,6 +119,7 @@ return [
     | Only whitelisted commands are permitted for security.
     */
     'cache_after_save' => true,
+    'run_cache_commands_in_local' => false,
     'cache_commands'   => [
         'config:clear',
         'config:cache',

@@ -79,6 +79,10 @@ jobs:
           coverage: none
 
       - name: Install dependencies
+        env:
+          # Older supported Laravel lines currently trigger Composer advisory blocking.
+          # Disable advisory blocking for the compatibility matrix so support tests can run.
+          COMPOSER_POLICY_ADVISORIES_BLOCK: 0
         run: |
           composer require \
             "laravel/framework:${{ matrix.laravel }}" \

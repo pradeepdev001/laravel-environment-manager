@@ -17,6 +17,7 @@ use Pradeepdev\EnvironmentManager\Models\EnvVersionHistory;
 use Pradeepdev\EnvironmentManager\Services\AuditLogger;
 use Pradeepdev\EnvironmentManager\Services\BackupManager;
 use Pradeepdev\EnvironmentManager\Services\DiffEngine;
+use Pradeepdev\EnvironmentManager\Services\EnvParser;
 use Pradeepdev\EnvironmentManager\Services\ExportFormatter;
 use Pradeepdev\EnvironmentManager\Services\ImportProcessor;
 use Pradeepdev\EnvironmentManager\Services\SensitivityDetector;
@@ -30,6 +31,7 @@ class UiController extends Controller
         private readonly EnvManagerGate $gate,
         private readonly BackupManager $backupManager,
         private readonly DiffEngine $diffEngine,
+        private readonly EnvParser $parser,
         private readonly ExportFormatter $exporter,
         private readonly ImportProcessor $importer,
         private readonly SensitivityDetector $sensitivityDetector,
@@ -306,20 +308,34 @@ class UiController extends Controller
     {
         $this->gate->authorize($request->user(), EnvManagerGate::PERMISSION_VIEW_ENV);
 
-        $diff     = [];
-        $historyA = null;
-        $historyB = null;
+        $diff = [];
 
-        if ($idA = $request->input('id_a')) {
-            $historyA = EnvVersionHistory::find($idA);
+        $backups = $this->backupManager->list();
+        $sources = collect($backups)
+            ->mapWithKeys(fn (array $backup) => [
+                'backup:'.$backup['filename'] => 'Backup: '.$backup['filename'],
+            ])
+            ->prepend('Current .env', 'current')
+            ->all();
+
+        $sourceA = (string) $request->input('source_a', 'current');
+        $sourceB = (string) $request->input('source_b', '');
+        $labelA  = $sources[$sourceA] ?? null;
+        $labelB  = $sources[$sourceB] ?? null;
+
+        if ($sourceA !== '' && $sourceB !== '') {
+            $mapA = $this->resolveDiffSourceMap($sourceA);
+            $mapB = $this->resolveDiffSourceMap($sourceB);
+
+            if ($mapA !== null && $mapB !== null) {
+                $diff = $this->diffEngine->maskSensitive(
+                    $this->diffEngine->diff($mapA, $mapB),
+                    $this->sensitivityDetector,
+                );
+            }
         }
-        if ($idB = $request->input('id_b')) {
-            $historyB = EnvVersionHistory::find($idB);
-        }
 
-        $history = EnvVersionHistory::latest()->take(50)->get();
-
-        return view('environment-manager::diff', compact('diff', 'history', 'historyA', 'historyB'));
+        return view('environment-manager::diff', compact('diff', 'sources', 'sourceA', 'sourceB', 'labelA', 'labelB'));
     }
 
     public function importExport(Request $request): View
@@ -380,5 +396,36 @@ class UiController extends Controller
         } catch (\InvalidArgumentException $e) {
             return back()->withErrors(['file' => $e->getMessage()]);
         }
+    }
+
+    /**
+     * Resolve a diff source into a key/value map.
+     *
+     * @return array<string, string>|null
+     */
+    private function resolveDiffSourceMap(string $source): ?array
+    {
+        if ($source === 'current') {
+            $lines = $this->manager->all();
+
+            return $lines->mapWithKeys(fn ($variable) => [$variable->key => $variable->rawValue])->all();
+        }
+
+        if (str_starts_with($source, 'backup:')) {
+            $filename = substr($source, 7);
+            $path     = rtrim((string) config('environment-manager.backup_path'), '/').'/'.$filename;
+
+            if (! file_exists($path)) {
+                return null;
+            }
+
+            $contents = $this->backupManager->getContents($path);
+            $lines    = $this->parser->parseContents($contents);
+            $map      = $this->parser->toKeyMap($lines);
+
+            return array_map(fn ($line) => $line->value ?? '', $map);
+        }
+
+        return null;
     }
 }

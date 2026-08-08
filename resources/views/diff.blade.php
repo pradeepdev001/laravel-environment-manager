@@ -6,26 +6,26 @@
 <h1 class="text-xl font-semibold mb-6">Diff Viewer</h1>
 
 <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-6">
-    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Select two history snapshots or upload two .env files to compare.</p>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Compare the current <code>.env</code> file with any saved backup, or compare two backups side by side.</p>
     <form method="GET" class="flex flex-wrap gap-3">
         <div>
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Snapshot A</label>
-            <select name="id_a" class="border border-gray-300 dark:border-gray-600 dark:bg-gray-800 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-64">
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Source A</label>
+            <select name="source_a" class="border border-gray-300 dark:border-gray-600 dark:bg-gray-800 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-64">
                 <option value="">— select —</option>
-                @foreach($history as $h)
-                    <option value="{{ $h->id }}" @selected(request('id_a') == $h->id)>
-                        {{ $h->created_at->format('Y-m-d H:i') }} – {{ $h->action }} {{ $h->key }}
+                @foreach($sources as $value => $label)
+                    <option value="{{ $value }}" @selected($sourceA === $value)>
+                        {{ $label }}
                     </option>
                 @endforeach
             </select>
         </div>
         <div>
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Snapshot B</label>
-            <select name="id_b" class="border border-gray-300 dark:border-gray-600 dark:bg-gray-800 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-64">
+            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Source B</label>
+            <select name="source_b" class="border border-gray-300 dark:border-gray-600 dark:bg-gray-800 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-64">
                 <option value="">— select —</option>
-                @foreach($history as $h)
-                    <option value="{{ $h->id }}" @selected(request('id_b') == $h->id)>
-                        {{ $h->created_at->format('Y-m-d H:i') }} – {{ $h->action }} {{ $h->key }}
+                @foreach($sources as $value => $label)
+                    <option value="{{ $value }}" @selected($sourceB === $value)>
+                        {{ $label }}
                     </option>
                 @endforeach
             </select>
@@ -40,7 +40,7 @@
     @if(empty(array_filter($diff, fn($e) => $e['status'] !== 'unchanged')))
         <div class="text-center py-8 text-gray-500 dark:text-gray-400">
             <p class="text-3xl mb-2">✓</p>
-            <p>The two snapshots are identical.</p>
+            <p>The selected sources are identical.</p>
         </div>
     @else
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
@@ -49,8 +49,8 @@
                     <tr>
                         <th class="px-4 py-3 text-left">Key</th>
                         <th class="px-4 py-3 text-left">Status</th>
-                        <th class="px-4 py-3 text-left">Old Value</th>
-                        <th class="px-4 py-3 text-left">New Value</th>
+                        <th class="px-4 py-3 text-left">{{ $labelA ?? 'Source A' }}</th>
+                        <th class="px-4 py-3 text-left">{{ $labelB ?? 'Source B' }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-700">

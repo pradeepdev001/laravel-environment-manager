@@ -22,12 +22,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Authentication Guard
+    |--------------------------------------------------------------------------
+    | The default guard used by the package UI and API routes.
+    | Set to null or empty string to fall back to Laravel's default auth guard.
+    */
+    'guard' => env('ENV_MANAGER_GUARD', 'admin'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Route Prefix & Middleware
     |--------------------------------------------------------------------------
     | The URI prefix and middleware stack for the admin UI routes.
     */
-    'route_prefix'     => env('ENV_MANAGER_PREFIX', 'env-manager'),
-    'route_middleware' => ['web', 'auth'],
+    'route_prefix'     => env('ENV_MANAGER_PREFIX', 'admin/env-manager'),
+    'route_middleware' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -35,7 +44,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'api_prefix'     => env('ENV_MANAGER_API_PREFIX', 'api/env-manager'),
-    'api_middleware' => ['api', 'auth:sanctum'],
+    'api_middleware' => null,
     'api_rate_limit' => 60,
 
     /*

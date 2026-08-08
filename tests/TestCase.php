@@ -18,6 +18,16 @@ abstract class TestCase extends Orchestra
 
     protected function getEnvironmentSetUp($app): void
     {
+        $app['config']->set('auth.defaults.guard', 'admin');
+        $app['config']->set('auth.guards.admin', [
+            'driver'   => 'session',
+            'provider' => 'users',
+        ]);
+        $app['config']->set('auth.providers.users', [
+            'driver' => 'eloquent',
+            'model'  => \Illuminate\Foundation\Auth\User::class,
+        ]);
+
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
             'driver'   => 'sqlite',
@@ -30,10 +40,7 @@ abstract class TestCase extends Orchestra
         $app['config']->set('environment-manager.backup_path', sys_get_temp_dir().'/env-manager-test-backups');
         $app['config']->set('environment-manager.cache_after_save', false);
         $app['config']->set('environment-manager.backup_retention', 5);
-
-        // Use simple auth middleware for tests — no sanctum required
-        $app['config']->set('environment-manager.api_middleware', ['api', 'auth']);
-        $app['config']->set('environment-manager.route_middleware', ['web', 'auth']);
+        $app['config']->set('environment-manager.guard', 'admin');
     }
 
     protected function setUp(): void

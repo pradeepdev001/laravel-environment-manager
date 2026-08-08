@@ -5,9 +5,12 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Pradeepdev\EnvironmentManager\Http\Controllers\ApiController;
 
-$prefix     = config('environment-manager.api_prefix', 'api/env-manager');
-$middleware = config('environment-manager.api_middleware', ['api', 'auth:sanctum']);
-$rateLimit  = config('environment-manager.api_rate_limit', 60);
+$prefix = config('environment-manager.api_prefix', 'api/env-manager');
+$guard  = trim((string) config('environment-manager.guard', 'admin'));
+
+$defaultMiddleware = ['api', $guard !== '' ? "auth:{$guard}" : 'auth'];
+$middleware        = config('environment-manager.api_middleware', $defaultMiddleware) ?? $defaultMiddleware;
+$rateLimit         = config('environment-manager.api_rate_limit', 60);
 
 Route::prefix($prefix)
     ->middleware([...$middleware, "throttle:{$rateLimit},1"])

@@ -5,8 +5,11 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Pradeepdev\EnvironmentManager\Http\Controllers\UiController;
 
-$prefix     = config('environment-manager.route_prefix', 'env-manager');
-$middleware = config('environment-manager.route_middleware', ['web', 'auth']);
+$prefix = config('environment-manager.route_prefix', 'admin/env-manager');
+$guard  = trim((string) config('environment-manager.guard', 'admin'));
+
+$defaultMiddleware = ['web', $guard !== '' ? "auth:{$guard}" : 'auth'];
+$middleware        = config('environment-manager.route_middleware', $defaultMiddleware) ?? $defaultMiddleware;
 
 Route::prefix($prefix)
     ->middleware($middleware)

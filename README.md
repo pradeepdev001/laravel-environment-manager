@@ -63,7 +63,7 @@ php artisan migrate
 
 ## Quick Start
 
-After installation, visit `/env-manager` in your browser (requires authentication).
+After installation, visit `/admin/env-manager` in your browser (requires authentication via the configured guard).
 
 ```bash
 # List all variables
@@ -118,9 +118,10 @@ return [
     'enable_ui'  => true,
     'enable_api' => true,
 
-    // Route prefix: accessible at /env-manager
-    'route_prefix'     => 'env-manager',
-    'route_middleware' => ['web', 'auth'],
+    // Admin-first defaults
+    'guard'            => 'admin',
+    'route_prefix'     => 'admin/env-manager',
+    'route_middleware' => null, // defaults to ['web', 'auth:admin']
 
     // Restrict to specific user IDs (null = all authenticated users)
     'allowed_users' => [1, 2],
@@ -153,7 +154,7 @@ See [`config/environment-manager.php`](config/environment-manager.php) for all a
 
 ## REST API
 
-All endpoints are under `/api/env-manager` and require Sanctum authentication.
+All endpoints are under `/api/env-manager` and, by default, require the `admin` guard.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|

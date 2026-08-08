@@ -1,14 +1,11 @@
-includes:
-    - vendor/larastan/larastan/extension.neon
-
 parameters:
-    level: 8
+    level: 5
     paths:
         - src
 
     ignoreErrors:
-        - '#Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable::#'
-        - '#Property .* has no type specified#'
+        - '#Call to an undefined (static )?method Illuminate\\#'
+        - '#Call to an undefined (static )?method Pradeepdev\\EnvironmentManager\\Models\\#'
+        - '#Property .* is never read, only written#'
 
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
+    treatPhpDocTypesAsCertain: false

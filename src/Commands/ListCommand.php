@@ -36,7 +36,7 @@ class ListCommand extends Command
 
         if ($this->option('format') === 'json') {
             $this->line(json_encode(
-                $variables->map->toArray()->values(),
+                array_values($variables->map(fn ($v) => $v->toArray())->all()),
                 JSON_PRETTY_PRINT,
             ));
 

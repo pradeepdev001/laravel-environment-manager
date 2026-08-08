@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Pradeepdev\EnvironmentManager\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\View\View;
 use Pradeepdev\EnvironmentManager\Authorization\EnvManagerGate;
 use Pradeepdev\EnvironmentManager\EnvManager;
 use Pradeepdev\EnvironmentManager\Exceptions\ValidationException;

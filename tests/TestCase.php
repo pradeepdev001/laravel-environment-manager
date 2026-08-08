@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pradeepdev\EnvironmentManager\Tests;
 
+use Illuminate\Foundation\Auth\User;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Pradeepdev\EnvironmentManager\EnvironmentManagerServiceProvider;
 
@@ -25,7 +26,7 @@ abstract class TestCase extends Orchestra
         ]);
         $app['config']->set('auth.providers.users', [
             'driver' => 'eloquent',
-            'model'  => \Illuminate\Foundation\Auth\User::class,
+            'model'  => User::class,
         ]);
 
         $app['config']->set('database.default', 'testing');

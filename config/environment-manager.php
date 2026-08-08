@@ -118,9 +118,9 @@ return [
     | Artisan commands to run after every successful .env write operation.
     | Only whitelisted commands are permitted for security.
     */
-    'cache_after_save' => true,
+    'cache_after_save'            => true,
     'run_cache_commands_in_local' => false,
-    'cache_commands'   => [
+    'cache_commands'              => [
         'config:clear',
         'config:cache',
         'route:cache',

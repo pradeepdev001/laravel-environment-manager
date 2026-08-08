@@ -14,41 +14,36 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Laravel 8 — PHP 8.1 only (8.0 min but we require 8.1)
           - php: '8.1'
             laravel: '8.*'
-            testbench: '6.*'
-          # Laravel 9
+            testbench: '^6.23'
           - php: '8.1'
             laravel: '9.*'
-            testbench: '7.*'
+            testbench: '^7.0'
           - php: '8.2'
             laravel: '9.*'
-            testbench: '7.*'
-          # Laravel 10
+            testbench: '^7.0'
           - php: '8.1'
             laravel: '10.*'
-            testbench: '8.*'
+            testbench: '^8.0'
           - php: '8.2'
             laravel: '10.*'
-            testbench: '8.*'
+            testbench: '^8.0'
           - php: '8.3'
             laravel: '10.*'
-            testbench: '8.*'
-          # Laravel 11
+            testbench: '^8.0'
           - php: '8.2'
             laravel: '11.*'
-            testbench: '9.*'
+            testbench: '^9.0'
           - php: '8.3'
             laravel: '11.*'
-            testbench: '9.*'
-          # Laravel 12
+            testbench: '^9.0'
           - php: '8.2'
             laravel: '12.*'
-            testbench: '10.*'
+            testbench: '^10.0'
           - php: '8.3'
             laravel: '12.*'
-            testbench: '10.*'
+            testbench: '^10.0'
 
     name: PHP ${{ matrix.php }} – Laravel ${{ matrix.laravel }}
 
@@ -66,16 +61,10 @@ jobs:
       - name: Install dependencies
         run: |
           composer require \
-            "illuminate/support:${{ matrix.laravel }}" \
-            "illuminate/database:${{ matrix.laravel }}" \
-            "illuminate/contracts:${{ matrix.laravel }}" \
-            "illuminate/console:${{ matrix.laravel }}" \
-            "illuminate/http:${{ matrix.laravel }}" \
-            "illuminate/routing:${{ matrix.laravel }}" \
-            "illuminate/notifications:${{ matrix.laravel }}" \
+            "laravel/framework:${{ matrix.laravel }}" \
             "orchestra/testbench:${{ matrix.testbench }}" \
             --no-interaction --no-update
-          composer update --prefer-dist --no-interaction --no-progress
+          composer update --prefer-dist --no-interaction --no-progress --ignore-platform-reqs
 
       - name: Run tests
         run: vendor/bin/pest --no-coverage

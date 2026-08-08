@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pradeepdev\EnvironmentManager\Services;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Pradeepdev\EnvironmentManager\Models\EnvVersionHistory;
@@ -35,7 +36,7 @@ class VersionHistory
             'new_value'  => $sensitive ? '[REDACTED]' : $newValue,
             'reason'     => $reason,
             'user_id'    => $user?->getKey(),
-            'user_name'  => $user?->name ?? 'System',
+            'user_name'  => ($user instanceof Model ? $user->getAttribute('name') : null) ?? 'System',
             'source'     => $source,
             'ip_address' => Request::ip(),
             'user_agent' => Request::userAgent(),

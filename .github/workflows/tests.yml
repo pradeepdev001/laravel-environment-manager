@@ -14,24 +14,38 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # Laravel 8 — PHP 8.1 only (8.0 min but we require 8.1)
+          - php: '8.1'
+            laravel: '8.*'
+            testbench: '6.*'
+          # Laravel 9
+          - php: '8.1'
+            laravel: '9.*'
+            testbench: '7.*'
+          - php: '8.2'
+            laravel: '9.*'
+            testbench: '7.*'
+          # Laravel 10
           - php: '8.1'
             laravel: '10.*'
             testbench: '8.*'
           - php: '8.2'
             laravel: '10.*'
             testbench: '8.*'
-          - php: '8.2'
-            laravel: '11.*'
-            testbench: '9.*'
-          - php: '8.2'
-            laravel: '12.*'
-            testbench: '10.*'
           - php: '8.3'
             laravel: '10.*'
             testbench: '8.*'
+          # Laravel 11
+          - php: '8.2'
+            laravel: '11.*'
+            testbench: '9.*'
           - php: '8.3'
             laravel: '11.*'
             testbench: '9.*'
+          # Laravel 12
+          - php: '8.2'
+            laravel: '12.*'
+            testbench: '10.*'
           - php: '8.3'
             laravel: '12.*'
             testbench: '10.*'

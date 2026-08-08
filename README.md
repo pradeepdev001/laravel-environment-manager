@@ -36,7 +36,7 @@ A secure, enterprise-grade Laravel package to manage `.env` variables through a 
 | Dependency | Version |
 |---|---|
 | PHP | ^8.1 |
-| Laravel | ^10.0 \| ^11.0 \| ^12.0 |
+| Laravel | ^8.0 \| ^9.0 \| ^10.0 \| ^11.0 \| ^12.0 |
 
 ---
 

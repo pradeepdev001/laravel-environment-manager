@@ -87,7 +87,7 @@ class EnvManager
         $envPath   = $this->getEnvPath();
         $lines     = $this->parser->parseFile($envPath);
         $keyMap    = $this->parser->toKeyMap($lines);
-        $oldValue  = $keyMap[$key]?->value ?? null;
+        $oldValue  = isset($keyMap[$key]) ? $keyMap[$key]->value : null;
         $action    = array_key_exists($key, $keyMap) ? 'update' : 'create';
         $sensitive = $this->sensitivityDetector->isSensitive($key);
 
@@ -168,7 +168,7 @@ class EnvManager
         $envPath   = $this->getEnvPath();
         $lines     = $this->parser->parseFile($envPath);
         $keyMap    = $this->parser->toKeyMap($lines);
-        $value     = $keyMap[$oldKey]?->value ?? '';
+        $value     = isset($keyMap[$oldKey]) ? ($keyMap[$oldKey]->value ?? '') : '';
         $sensitive = $this->sensitivityDetector->isSensitive($oldKey)
                   || $this->sensitivityDetector->isSensitive($newKey);
 
@@ -215,7 +215,7 @@ class EnvManager
         foreach ($variables as $key => $value) {
             $this->validateKeyFormat($key);
             $changes[$key] = [
-                'old'       => $keyMap[$key]?->value ?? null,
+                'old'       => isset($keyMap[$key]) ? $keyMap[$key]->value : null,
                 'new'       => $value,
                 'sensitive' => $this->sensitivityDetector->isSensitive($key),
             ];

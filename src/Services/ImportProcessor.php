@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pradeepdev\EnvironmentManager\Services;
 
-use Pradeepdev\EnvironmentManager\Data\EnvLine;
 use Pradeepdev\EnvironmentManager\Exceptions\ValidationException;
 
 class ImportProcessor
@@ -21,7 +20,7 @@ class ImportProcessor
      */
     public function parseEnvString(string $contents): array
     {
-        $lines = $this->parser->parseContents($contents);
+        $lines  = $this->parser->parseContents($contents);
         $result = [];
 
         foreach ($lines as $line) {
@@ -37,6 +36,7 @@ class ImportProcessor
      * Parse a JSON file/string into a key-value map.
      *
      * @return array<string, string>
+     *
      * @throws \InvalidArgumentException
      */
     public function parseJsonString(string $contents): array
@@ -50,7 +50,7 @@ class ImportProcessor
         $result = [];
         foreach ($decoded as $key => $value) {
             if (! is_string($key)) {
-                throw new \InvalidArgumentException("JSON key must be a string, got: " . gettype($key));
+                throw new \InvalidArgumentException('JSON key must be a string, got: '.gettype($key));
             }
             $result[$key] = (string) $value;
         }
@@ -63,6 +63,7 @@ class ImportProcessor
      * Throws ValidationException if any variable fails validation.
      *
      * @param  array<string, string>  $variables
+     *
      * @throws ValidationException
      */
     public function validate(array $variables): void
@@ -79,6 +80,7 @@ class ImportProcessor
      * Does NOT write to disk — caller is responsible for applying.
      *
      * @return array<string, string>
+     *
      * @throws ValidationException
      */
     public function processEnv(string $contents): array
@@ -93,6 +95,7 @@ class ImportProcessor
      * Process a JSON import: parse, validate, return variables.
      *
      * @return array<string, string>
+     *
      * @throws ValidationException|\InvalidArgumentException
      */
     public function processJson(string $contents): array

@@ -6,7 +6,7 @@ use Pradeepdev\EnvironmentManager\Exceptions\ValidationException;
 use Pradeepdev\EnvironmentManager\Services\ValidationEngine;
 
 beforeEach(function () {
-    $this->validator = new ValidationEngine();
+    $this->validator = new ValidationEngine;
 });
 
 // URL validation

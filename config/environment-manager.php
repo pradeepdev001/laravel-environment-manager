@@ -26,7 +26,7 @@ return [
     |--------------------------------------------------------------------------
     | The URI prefix and middleware stack for the admin UI routes.
     */
-    'route_prefix' => env('ENV_MANAGER_PREFIX', 'env-manager'),
+    'route_prefix'     => env('ENV_MANAGER_PREFIX', 'env-manager'),
     'route_middleware' => ['web', 'auth'],
 
     /*
@@ -34,7 +34,7 @@ return [
     | API Prefix & Middleware
     |--------------------------------------------------------------------------
     */
-    'api_prefix' => env('ENV_MANAGER_API_PREFIX', 'api/env-manager'),
+    'api_prefix'     => env('ENV_MANAGER_API_PREFIX', 'api/env-manager'),
     'api_middleware' => ['api', 'auth:sanctum'],
     'api_rate_limit' => 60,
 
@@ -82,8 +82,8 @@ return [
     | Backup Configuration
     |--------------------------------------------------------------------------
     */
-    'backup_path' => storage_path('env-backups'),
-    'backup_retention' => 20,
+    'backup_path'       => storage_path('env-backups'),
+    'backup_retention'  => 20,
     'backup_encryption' => false,
 
     /*
@@ -100,7 +100,7 @@ return [
     | Number of days to retain records. Set to null for indefinite retention.
     */
     'version_history_retention_days' => 90,
-    'audit_log_retention_days' => 180,
+    'audit_log_retention_days'       => 180,
 
     /*
     |--------------------------------------------------------------------------
@@ -110,7 +110,7 @@ return [
     | Only whitelisted commands are permitted for security.
     */
     'cache_after_save' => true,
-    'cache_commands' => [
+    'cache_commands'   => [
         'config:clear',
         'config:cache',
         'route:cache',
@@ -160,17 +160,17 @@ return [
     | 'APP_ENV'  => ['enum:local,development,staging,production', 'required'],
     */
     'validation_rules' => [
-        'APP_URL'           => ['url'],
-        'APP_ENV'           => ['enum:local,development,staging,testing,production'],
-        'APP_DEBUG'         => ['boolean'],
-        'MAIL_PORT'         => ['integer', 'min:1', 'max:65535'],
-        'DB_CONNECTION'     => ['enum:mysql,pgsql,sqlite,sqlsrv,mariadb'],
-        'CACHE_DRIVER'      => ['enum:array,file,database,redis,memcached,dynamodb,octane'],
-        'QUEUE_CONNECTION'  => ['enum:sync,database,beanstalkd,sqs,redis,null'],
-        'SESSION_DRIVER'    => ['enum:file,cookie,database,apc,memcached,redis,dynamodb,array'],
-        'MAIL_MAILER'       => ['enum:smtp,sendmail,mailgun,ses,sparkpost,log,array,failover'],
-        'DB_PORT'           => ['integer', 'min:1', 'max:65535'],
-        'REDIS_PORT'        => ['integer', 'min:1', 'max:65535'],
+        'APP_URL'          => ['url'],
+        'APP_ENV'          => ['enum:local,development,staging,testing,production'],
+        'APP_DEBUG'        => ['boolean'],
+        'MAIL_PORT'        => ['integer', 'min:1', 'max:65535'],
+        'DB_CONNECTION'    => ['enum:mysql,pgsql,sqlite,sqlsrv,mariadb'],
+        'CACHE_DRIVER'     => ['enum:array,file,database,redis,memcached,dynamodb,octane'],
+        'QUEUE_CONNECTION' => ['enum:sync,database,beanstalkd,sqs,redis,null'],
+        'SESSION_DRIVER'   => ['enum:file,cookie,database,apc,memcached,redis,dynamodb,array'],
+        'MAIL_MAILER'      => ['enum:smtp,sendmail,mailgun,ses,sparkpost,log,array,failover'],
+        'DB_PORT'          => ['integer', 'min:1', 'max:65535'],
+        'REDIS_PORT'       => ['integer', 'min:1', 'max:65535'],
     ],
 
     /*
@@ -180,26 +180,26 @@ return [
     | Map key prefixes to categories. Order matters — first match wins.
     */
     'categories' => [
-        'APP_'          => 'Application',
-        'LOG_'          => 'Application',
-        'DB_'           => 'Database',
-        'MAIL_'         => 'Mail',
-        'MAILGUN_'      => 'Mail',
-        'SES_'          => 'Mail',
-        'POSTMARK_'     => 'Mail',
-        'CACHE_'        => 'Cache',
-        'MEMCACHED_'    => 'Cache',
-        'QUEUE_'        => 'Queue',
-        'BROADCAST_'    => 'Broadcast',
-        'PUSHER_'       => 'Broadcast',
-        'ABLY_'         => 'Broadcast',
-        'FILESYSTEM_'   => 'Filesystem',
-        'REDIS_'        => 'Redis',
-        'AWS_'          => 'AWS',
-        'STRIPE_'       => 'Stripe',
-        'SESSION_'      => 'Session',
-        'SANCTUM_'      => 'Security',
-        'JWT_'          => 'Security',
+        'APP_'        => 'Application',
+        'LOG_'        => 'Application',
+        'DB_'         => 'Database',
+        'MAIL_'       => 'Mail',
+        'MAILGUN_'    => 'Mail',
+        'SES_'        => 'Mail',
+        'POSTMARK_'   => 'Mail',
+        'CACHE_'      => 'Cache',
+        'MEMCACHED_'  => 'Cache',
+        'QUEUE_'      => 'Queue',
+        'BROADCAST_'  => 'Broadcast',
+        'PUSHER_'     => 'Broadcast',
+        'ABLY_'       => 'Broadcast',
+        'FILESYSTEM_' => 'Filesystem',
+        'REDIS_'      => 'Redis',
+        'AWS_'        => 'AWS',
+        'STRIPE_'     => 'Stripe',
+        'SESSION_'    => 'Session',
+        'SANCTUM_'    => 'Security',
+        'JWT_'        => 'Security',
     ],
 
     /*
@@ -211,23 +211,23 @@ return [
         'on_env_update' => false,
 
         'mail' => [
-            'enabled' => false,
+            'enabled'    => false,
             'recipients' => [],
         ],
 
         'slack' => [
-            'enabled' => false,
+            'enabled'     => false,
             'webhook_url' => env('ENV_MANAGER_SLACK_WEBHOOK', ''),
         ],
 
         'teams' => [
-            'enabled' => false,
+            'enabled'     => false,
             'webhook_url' => env('ENV_MANAGER_TEAMS_WEBHOOK', ''),
         ],
 
         'webhook' => [
             'enabled' => false,
-            'url' => env('ENV_MANAGER_WEBHOOK_URL', ''),
+            'url'     => env('ENV_MANAGER_WEBHOOK_URL', ''),
         ],
     ],
 

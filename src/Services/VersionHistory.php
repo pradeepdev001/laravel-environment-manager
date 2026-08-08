@@ -29,16 +29,16 @@ class VersionHistory
         $user = Auth::user();
 
         $record = EnvVersionHistory::create([
-            'action'       => $action,
-            'key'          => $key,
-            'old_value'    => $sensitive ? '[REDACTED]' : $oldValue,
-            'new_value'    => $sensitive ? '[REDACTED]' : $newValue,
-            'reason'       => $reason,
-            'user_id'      => $user?->getKey(),
-            'user_name'    => $user?->name ?? 'System',
-            'source'       => $source,
-            'ip_address'   => Request::ip(),
-            'user_agent'   => Request::userAgent(),
+            'action'     => $action,
+            'key'        => $key,
+            'old_value'  => $sensitive ? '[REDACTED]' : $oldValue,
+            'new_value'  => $sensitive ? '[REDACTED]' : $newValue,
+            'reason'     => $reason,
+            'user_id'    => $user?->getKey(),
+            'user_name'  => $user?->name ?? 'System',
+            'source'     => $source,
+            'ip_address' => Request::ip(),
+            'user_agent' => Request::userAgent(),
         ]);
 
         // Also log to audit log

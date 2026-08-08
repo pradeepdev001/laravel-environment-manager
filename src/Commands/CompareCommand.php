@@ -28,11 +28,13 @@ class CompareCommand extends Command
 
         if (! file_exists($path1)) {
             $this->error("File not found: [{$path1}]");
+
             return self::FAILURE;
         }
 
         if (! file_exists($path2)) {
             $this->error("File not found: [{$path2}]");
+
             return self::FAILURE;
         }
 
@@ -70,12 +72,13 @@ class CompareCommand extends Command
 
         if (empty($rows)) {
             $this->info('The two files are identical.');
+
             return self::SUCCESS;
         }
 
         $this->table(
             ['Key', 'Status', basename($path1), basename($path2)],
-            $rows
+            $rows,
         );
 
         $added    = count(array_filter($diff, fn ($e) => $e['status'] === DiffEngine::STATUS_ADDED));

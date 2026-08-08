@@ -25,9 +25,9 @@ abstract class TestCase extends Orchestra
             'prefix'   => '',
         ]);
 
-        $app['config']->set('app.key', 'base64:' . base64_encode(str_repeat('a', 32)));
+        $app['config']->set('app.key', 'base64:'.base64_encode(str_repeat('a', 32)));
         $app['config']->set('environment-manager.env_file_path', $this->getTestEnvPath());
-        $app['config']->set('environment-manager.backup_path', sys_get_temp_dir() . '/env-manager-test-backups');
+        $app['config']->set('environment-manager.backup_path', sys_get_temp_dir().'/env-manager-test-backups');
         $app['config']->set('environment-manager.cache_after_save', false);
         $app['config']->set('environment-manager.backup_retention', 5);
 
@@ -43,7 +43,7 @@ abstract class TestCase extends Orchestra
 
     protected function defineDatabaseMigrations(): void
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 
     protected function tearDown(): void
@@ -54,9 +54,9 @@ abstract class TestCase extends Orchestra
             @unlink($envPath);
         }
 
-        $backupPath = sys_get_temp_dir() . '/env-manager-test-backups';
+        $backupPath = sys_get_temp_dir().'/env-manager-test-backups';
         if (is_dir($backupPath)) {
-            array_map('unlink', glob($backupPath . '/*') ?: []);
+            array_map('unlink', glob($backupPath.'/*') ?: []);
             @rmdir($backupPath);
         }
 
@@ -65,7 +65,7 @@ abstract class TestCase extends Orchestra
 
     protected function getTestEnvPath(): string
     {
-        return sys_get_temp_dir() . '/env-manager-test-' . getmypid() . '.env';
+        return sys_get_temp_dir().'/env-manager-test-'.getmypid().'.env';
     }
 
     protected function writeTestEnv(string $contents): void

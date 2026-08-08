@@ -6,9 +6,12 @@ namespace Pradeepdev\EnvironmentManager\Services;
 
 class DiffEngine
 {
-    public const STATUS_ADDED    = 'added';
-    public const STATUS_REMOVED  = 'removed';
+    public const STATUS_ADDED = 'added';
+
+    public const STATUS_REMOVED = 'removed';
+
     public const STATUS_MODIFIED = 'modified';
+
     public const STATUS_UNCHANGED = 'unchanged';
 
     /**
@@ -70,7 +73,7 @@ class DiffEngine
     {
         return array_filter(
             $this->diff($old, $new),
-            fn ($entry) => $entry['status'] !== self::STATUS_UNCHANGED
+            fn ($entry) => $entry['status'] !== self::STATUS_UNCHANGED,
         );
     }
 

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Pradeepdev\EnvironmentManager\Data\EnvLine;
 use Pradeepdev\EnvironmentManager\Exceptions\EnvFileNotFoundException;
 use Pradeepdev\EnvironmentManager\Services\EnvParser;
+use Pradeepdev\EnvironmentManager\Services\EnvWriter;
 
 beforeEach(function () {
-    $this->parser = new EnvParser();
+    $this->parser = new EnvParser;
 });
 
 it('parses simple key=value pairs', function () {
@@ -104,8 +104,8 @@ it('parses a file with multiple variable types', function () {
 it('round-trips: parse then write produces equivalent keys', function () {
     $content = "APP_NAME=Laravel\n# comment\nDB_HOST=127.0.0.1\n\nAPP_ENV=local\n";
 
-    $lines = $this->parser->parseContents($content);
-    $writer = new \Pradeepdev\EnvironmentManager\Services\EnvWriter();
+    $lines  = $this->parser->parseContents($content);
+    $writer = new EnvWriter;
     $output = $writer->linesToString($lines);
     $lines2 = $this->parser->parseContents($output);
 

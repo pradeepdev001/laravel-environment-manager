@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pradeepdev\EnvironmentManager\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -13,11 +14,14 @@ use Pradeepdev\EnvironmentManager\EnvManager;
 use Pradeepdev\EnvironmentManager\Exceptions\ValidationException;
 use Pradeepdev\EnvironmentManager\Models\EnvAuditLog;
 use Pradeepdev\EnvironmentManager\Models\EnvVersionHistory;
+use Pradeepdev\EnvironmentManager\Services\AuditLogger;
 use Pradeepdev\EnvironmentManager\Services\BackupManager;
 use Pradeepdev\EnvironmentManager\Services\DiffEngine;
 use Pradeepdev\EnvironmentManager\Services\ExportFormatter;
 use Pradeepdev\EnvironmentManager\Services\ImportProcessor;
 use Pradeepdev\EnvironmentManager\Services\SensitivityDetector;
+use Pradeepdev\EnvironmentManager\Services\VersionHistory;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UiController extends Controller
 {
@@ -43,7 +47,7 @@ class UiController extends Controller
         // Filters
         if ($search = $request->input('search')) {
             $variables = $variables->filter(
-                fn ($v) => str_contains(strtolower($v->key), strtolower($search))
+                fn ($v) => str_contains(strtolower($v->key), strtolower($search)),
             );
         }
 
@@ -63,7 +67,7 @@ class UiController extends Controller
         $perPage    = config('environment-manager.per_page', 25);
 
         return view('environment-manager::index', compact(
-            'grouped', 'categories', 'reveal', 'canReveal', 'search', 'category', 'sort', 'dir', 'perPage'
+            'grouped', 'categories', 'reveal', 'canReveal', 'search', 'category', 'sort', 'dir', 'perPage',
         ));
     }
 
@@ -87,7 +91,7 @@ class UiController extends Controller
         try {
             $this->manager->set(
                 key: $validated['key'],
-                value: $validated['value'] ?? '',
+                value: $validated['value']   ?? '',
                 reason: $validated['reason'] ?? null,
             );
 
@@ -124,7 +128,7 @@ class UiController extends Controller
         try {
             $this->manager->set(
                 key: $key,
-                value: $validated['value'] ?? '',
+                value: $validated['value']   ?? '',
                 reason: $validated['reason'] ?? null,
             );
 
@@ -147,7 +151,7 @@ class UiController extends Controller
             ->with('success', "Variable [{$key}] deleted.");
     }
 
-    public function reveal(Request $request, string $key): \Illuminate\Http\JsonResponse
+    public function reveal(Request $request, string $key): JsonResponse
     {
         $this->gate->authorize($request->user(), EnvManagerGate::PERMISSION_REVEAL_SECRETS);
 
@@ -158,7 +162,7 @@ class UiController extends Controller
         }
 
         // Audit the reveal
-        app(\Pradeepdev\EnvironmentManager\Services\AuditLogger::class)->log(
+        app(AuditLogger::class)->log(
             action: 'reveal',
             key: $key,
             sensitive: true,
@@ -238,14 +242,14 @@ class UiController extends Controller
 
         return redirect()
             ->route('env-manager.backups')
-            ->with('success', 'Backup created: ' . basename($path));
+            ->with('success', 'Backup created: '.basename($path));
     }
 
-    public function downloadBackup(Request $request, string $filename): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function downloadBackup(Request $request, string $filename): StreamedResponse
     {
         $this->gate->authorize($request->user(), EnvManagerGate::PERMISSION_BACKUP_ENV);
 
-        $path = rtrim(config('environment-manager.backup_path'), '/') . '/' . $filename;
+        $path = rtrim(config('environment-manager.backup_path'), '/').'/'.$filename;
 
         if (! file_exists($path)) {
             abort(404, 'Backup file not found.');
@@ -254,12 +258,12 @@ class UiController extends Controller
         $contents = $this->backupManager->getContents($path);
 
         return response()->streamDownload(
-            fn () => print($contents),
+            fn () => print ($contents),
             basename($filename, '.enc'),
             [
-                'Content-Type'        => 'text/plain',
+                'Content-Type'           => 'text/plain',
                 'X-Content-Type-Options' => 'nosniff',
-            ]
+            ],
         );
     }
 
@@ -267,13 +271,13 @@ class UiController extends Controller
     {
         $this->gate->authorize($request->user(), EnvManagerGate::PERMISSION_RESTORE_ENV);
 
-        $path    = rtrim(config('environment-manager.backup_path'), '/') . '/' . $filename;
+        $path    = rtrim(config('environment-manager.backup_path'), '/').'/'.$filename;
         $envPath = $this->manager->getEnvPath();
 
         $this->backupManager->create($envPath); // backup current before restoring
         $this->backupManager->restore($path, $envPath);
 
-        app(\Pradeepdev\EnvironmentManager\Services\VersionHistory::class)->record(
+        app(VersionHistory::class)->record(
             action: 'restore',
             key: '*',
             oldValue: null,
@@ -290,7 +294,7 @@ class UiController extends Controller
     {
         $this->gate->authorize($request->user(), EnvManagerGate::PERMISSION_BACKUP_ENV);
 
-        $path = rtrim(config('environment-manager.backup_path'), '/') . '/' . $filename;
+        $path = rtrim(config('environment-manager.backup_path'), '/').'/'.$filename;
         $this->backupManager->delete($path);
 
         return redirect()
@@ -302,7 +306,7 @@ class UiController extends Controller
     {
         $this->gate->authorize($request->user(), EnvManagerGate::PERMISSION_VIEW_ENV);
 
-        $diff = [];
+        $diff     = [];
         $historyA = null;
         $historyB = null;
 
@@ -325,7 +329,7 @@ class UiController extends Controller
         return view('environment-manager::import-export');
     }
 
-    public function export(Request $request, string $format = 'env'): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function export(Request $request, string $format = 'env'): StreamedResponse
     {
         $this->gate->authorize($request->user(), EnvManagerGate::PERMISSION_VIEW_ENV);
 
@@ -335,18 +339,18 @@ class UiController extends Controller
         $variables = $this->manager->toKeyValueMap();
 
         [$contents, $mime, $ext] = match ($format) {
-            'json' => [$this->exporter->toJson($variables, $reveal), 'application/json', 'json'],
-            'yaml' => [$this->exporter->toYaml($variables, $reveal), 'text/yaml', 'yaml'],
+            'json'  => [$this->exporter->toJson($variables, $reveal), 'application/json', 'json'],
+            'yaml'  => [$this->exporter->toYaml($variables, $reveal), 'text/yaml', 'yaml'],
             default => [$this->exporter->toEnv($variables, $reveal), 'text/plain', 'env'],
         };
 
         return response()->streamDownload(
-            fn () => print($contents),
-            ".env_export_{$format}." . $ext,
+            fn () => print ($contents),
+            ".env_export_{$format}.".$ext,
             [
                 'Content-Type'           => $mime,
                 'X-Content-Type-Options' => 'nosniff',
-            ]
+            ],
         );
     }
 

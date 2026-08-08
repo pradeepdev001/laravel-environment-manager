@@ -22,6 +22,7 @@ class GetCommand extends Command
 
         if ($variable === null) {
             $this->error("Variable [{$key}] not found in .env file.");
+
             return self::FAILURE;
         }
 
@@ -35,7 +36,7 @@ class GetCommand extends Command
                 $variable->type,
                 $variable->category,
                 $variable->sensitive ? 'Yes' : 'No',
-            ]]
+            ]],
         );
 
         if ($this->option('reveal') && ! $reveal) {

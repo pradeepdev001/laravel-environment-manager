@@ -37,7 +37,7 @@ class ApiController extends Controller
 
         if ($search = $request->input('search')) {
             $variables = $variables->filter(
-                fn ($v) => str_contains(strtolower($v->key), strtolower($search))
+                fn ($v) => str_contains(strtolower($v->key), strtolower($search)),
             );
         }
 
@@ -46,7 +46,7 @@ class ApiController extends Controller
         }
 
         $data = $variables->map(function ($v) use ($reveal) {
-            $arr = $v->toArray();
+            $arr          = $v->toArray();
             $arr['value'] = $v->getDisplayValue($reveal);
 
             return $arr;
@@ -71,7 +71,7 @@ class ApiController extends Controller
         try {
             $result = $this->manager->set(
                 key: $validated['key'],
-                value: $validated['value'] ?? '',
+                value: $validated['value']   ?? '',
                 reason: $validated['reason'] ?? null,
                 source: 'api',
             );
@@ -101,7 +101,7 @@ class ApiController extends Controller
         try {
             $result = $this->manager->set(
                 key: $key,
-                value: $validated['value'] ?? '',
+                value: $validated['value']   ?? '',
                 reason: $validated['reason'] ?? null,
                 source: 'api',
             );

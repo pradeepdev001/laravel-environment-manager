@@ -27,14 +27,14 @@ class BackupManager
             throw new \RuntimeException("Could not read .env file at [{$envPath}] for backup.");
         }
 
-        $timestamp = now()->format('Y_m_d_His');
-        $hash = substr(md5($contents . microtime()), 0, 8);
-        $filename = "env_backup_{$timestamp}_{$hash}.env";
-        $destination = rtrim($this->backupPath, '/') . '/' . $filename;
+        $timestamp   = now()->format('Y_m_d_His');
+        $hash        = substr(md5($contents.microtime()), 0, 8);
+        $filename    = "env_backup_{$timestamp}_{$hash}.env";
+        $destination = rtrim($this->backupPath, '/').'/'.$filename;
 
         if ($this->encryption) {
             $contents = $this->encrypt($contents);
-            $filename .= '.enc';
+            $filename    .= '.enc';
             $destination .= '.enc';
         }
 
@@ -78,7 +78,7 @@ class BackupManager
     {
         $this->ensureBackupDirectory();
 
-        $files = glob(rtrim($this->backupPath, '/') . '/env_backup_*.env*');
+        $files = glob(rtrim($this->backupPath, '/').'/env_backup_*.env*');
         if ($files === false) {
             return [];
         }
@@ -120,7 +120,7 @@ class BackupManager
 
         $contents = file_get_contents($backupFilePath);
         if ($contents === false) {
-            throw new \RuntimeException("Could not read backup file.");
+            throw new \RuntimeException('Could not read backup file.');
         }
 
         if ($this->encryption && str_ends_with($backupFilePath, '.enc')) {
@@ -162,18 +162,18 @@ class BackupManager
 
     private function encrypt(string $data): string
     {
-        $key = base64_decode(substr(config('app.key', ''), 7));
-        $iv = random_bytes(16);
+        $key       = base64_decode(substr(config('app.key', ''), 7));
+        $iv        = random_bytes(16);
         $encrypted = openssl_encrypt($data, 'AES-256-CBC', $key, 0, $iv);
 
-        return base64_encode($iv . $encrypted);
+        return base64_encode($iv.$encrypted);
     }
 
     private function decrypt(string $data): string
     {
-        $key = base64_decode(substr(config('app.key', ''), 7));
-        $raw = base64_decode($data);
-        $iv = substr($raw, 0, 16);
+        $key       = base64_decode(substr(config('app.key', ''), 7));
+        $raw       = base64_decode($data);
+        $iv        = substr($raw, 0, 16);
         $encrypted = substr($raw, 16);
 
         $decrypted = openssl_decrypt($encrypted, 'AES-256-CBC', $key, 0, $iv);

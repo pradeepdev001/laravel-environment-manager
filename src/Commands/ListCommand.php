@@ -30,14 +30,16 @@ class ListCommand extends Command
 
         if ($variables->isEmpty()) {
             $this->warn('No variables found matching the given criteria.');
+
             return self::SUCCESS;
         }
 
         if ($this->option('format') === 'json') {
             $this->line(json_encode(
                 $variables->map->toArray()->values(),
-                JSON_PRETTY_PRINT
+                JSON_PRETTY_PRINT,
             ));
+
             return self::SUCCESS;
         }
 

@@ -10,10 +10,13 @@ namespace Pradeepdev\EnvironmentManager\Data;
  */
 class EnvLine
 {
-    public const TYPE_VARIABLE  = 'variable';
-    public const TYPE_COMMENT   = 'comment';
-    public const TYPE_BLANK     = 'blank';
-    public const TYPE_SECTION   = 'section';  // e.g. "# ---- Database ----"
+    public const TYPE_VARIABLE = 'variable';
+
+    public const TYPE_COMMENT = 'comment';
+
+    public const TYPE_BLANK = 'blank';
+
+    public const TYPE_SECTION = 'section';  // e.g. "# ---- Database ----"
 
     public function __construct(
         public readonly string $type,
@@ -52,13 +55,13 @@ class EnvLine
 
         // Re-apply original quote style if present
         if ($this->quoteStyle !== null) {
-            $value = $this->quoteStyle . $value . $this->quoteStyle;
+            $value = $this->quoteStyle.$value.$this->quoteStyle;
         }
 
         $line = "{$this->key}={$value}";
 
         if ($this->inlineComment !== null) {
-            $line .= ' ' . $this->inlineComment;
+            $line .= ' '.$this->inlineComment;
         }
 
         return $line;

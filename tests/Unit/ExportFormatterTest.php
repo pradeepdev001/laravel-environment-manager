@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
+use Pradeepdev\EnvironmentManager\Services\EnvParser;
 use Pradeepdev\EnvironmentManager\Services\ExportFormatter;
 use Pradeepdev\EnvironmentManager\Services\SensitivityDetector;
 
 beforeEach(function () {
-    $this->formatter = new ExportFormatter(new SensitivityDetector());
+    $this->formatter = new ExportFormatter(new SensitivityDetector);
 
     $this->vars = [
         'APP_NAME'    => 'Laravel',
@@ -80,7 +81,7 @@ it('masks sensitive values in YAML export by default', function () {
 
 // Round-trip: toEnv then parse back
 it('env export round-trips cleanly', function () {
-    $parser   = new \Pradeepdev\EnvironmentManager\Services\EnvParser();
+    $parser   = new EnvParser;
     $exported = $this->formatter->toEnv($this->vars, reveal: true);
     $lines    = $parser->parseContents($exported);
     $map      = $parser->toKeyMap($lines);

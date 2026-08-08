@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-use Pradeepdev\EnvironmentManager\Exceptions\BackupStorageException;
 use Pradeepdev\EnvironmentManager\Services\BackupManager;
 
 beforeEach(function () {
-    $this->backupDir = sys_get_temp_dir() . '/env_backup_test_' . getmypid();
-    $this->envFile   = sys_get_temp_dir() . '/test_env_' . getmypid() . '.env';
+    $this->backupDir = sys_get_temp_dir().'/env_backup_test_'.getmypid();
+    $this->envFile   = sys_get_temp_dir().'/test_env_'.getmypid().'.env';
 
     file_put_contents($this->envFile, "APP_NAME=Laravel\nAPP_ENV=local\n");
 
@@ -16,7 +15,7 @@ beforeEach(function () {
 
 afterEach(function () {
     if (is_dir($this->backupDir)) {
-        array_map('unlink', glob($this->backupDir . '/*') ?: []);
+        array_map('unlink', glob($this->backupDir.'/*') ?: []);
         @rmdir($this->backupDir);
     }
     if (file_exists($this->envFile)) {
@@ -88,10 +87,10 @@ it('reads backup contents', function () {
 });
 
 it('throws BackupStorageException if directory is not writable', function () {
-    $manager = new BackupManager('/root/no_access_' . getmypid(), 5, false);
+    $manager = new BackupManager('/root/no_access_'.getmypid(), 5, false);
     $manager->create($this->envFile);
-})->throws(\Exception::class);
+})->throws(Exception::class);
 
 it('throws exception for missing backup file on restore', function () {
     $this->manager->restore('/nonexistent/backup.env', $this->envFile);
-})->throws(\RuntimeException::class);
+})->throws(RuntimeException::class);

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 use Pradeepdev\EnvironmentManager\Exceptions\ValidationException;
 use Pradeepdev\EnvironmentManager\Services\EnvParser;
+use Pradeepdev\EnvironmentManager\Services\ExportFormatter;
 use Pradeepdev\EnvironmentManager\Services\ImportProcessor;
+use Pradeepdev\EnvironmentManager\Services\SensitivityDetector;
 use Pradeepdev\EnvironmentManager\Services\ValidationEngine;
 
 beforeEach(function () {
-    $this->processor = new ImportProcessor(new EnvParser(), new ValidationEngine());
+    $this->processor = new ImportProcessor(new EnvParser, new ValidationEngine);
 });
 
 // .env format import
@@ -39,11 +41,11 @@ it('parses a valid JSON string', function () {
 
 it('throws on invalid JSON', function () {
     $this->processor->parseJsonString('not-json');
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 it('throws on JSON array instead of object', function () {
     $this->processor->parseJsonString('["APP_NAME", "Laravel"]');
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 // Validation in processEnv
 it('processes valid .env and returns variables', function () {
@@ -74,8 +76,8 @@ it('throws ValidationException for invalid values in processJson', function () {
 // validate rejects entire payload on any error
 it('validates rejects entire payload when one key fails', function () {
     $this->processor->validate([
-        'APP_ENV'  => 'local',     // valid
-        'APP_URL'  => 'bad-url',   // invalid
+        'APP_ENV' => 'local',     // valid
+        'APP_URL' => 'bad-url',   // invalid
     ]);
 })->throws(ValidationException::class);
 
@@ -84,10 +86,10 @@ it('round-trips: parse .env then re-export produces equivalent keys', function (
     $content  = "APP_NAME=Laravel\nDB_CONNECTION=mysql\nMAIL_PORT=587\n";
     $imported = $this->processor->parseEnvString($content);
 
-    $formatter = new \Pradeepdev\EnvironmentManager\Services\ExportFormatter(
-        new \Pradeepdev\EnvironmentManager\Services\SensitivityDetector()
+    $formatter = new ExportFormatter(
+        new SensitivityDetector,
     );
-    $exported  = $formatter->toEnv($imported, reveal: true);
+    $exported   = $formatter->toEnv($imported, reveal: true);
     $reimported = $this->processor->parseEnvString($exported);
 
     foreach (array_keys($imported) as $key) {

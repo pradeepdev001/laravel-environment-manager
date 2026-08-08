@@ -46,6 +46,7 @@ class CacheManager
             if (! in_array($command, self::ALLOWED_COMMANDS, true)) {
                 Log::warning("EnvironmentManager: Skipping non-whitelisted cache command [{$command}].");
                 $results[$command] = ['success' => false, 'output' => 'Command not whitelisted.'];
+
                 continue;
             }
 

@@ -10,55 +10,54 @@ use Pradeepdev\EnvironmentManager\Commands\CompareCommand;
 use Pradeepdev\EnvironmentManager\Commands\DeleteCommand;
 use Pradeepdev\EnvironmentManager\Commands\GetCommand;
 use Pradeepdev\EnvironmentManager\Commands\ListCommand;
+use Pradeepdev\EnvironmentManager\Commands\PruneCommand;
 use Pradeepdev\EnvironmentManager\Commands\RestoreCommand;
 use Pradeepdev\EnvironmentManager\Commands\SetCommand;
 use Pradeepdev\EnvironmentManager\Commands\ValidateCommand;
-use Pradeepdev\EnvironmentManager\Commands\PruneCommand;
+use Pradeepdev\EnvironmentManager\Services\AuditLogger;
+use Pradeepdev\EnvironmentManager\Services\BackupManager;
+use Pradeepdev\EnvironmentManager\Services\CacheManager;
+use Pradeepdev\EnvironmentManager\Services\DiffEngine;
 use Pradeepdev\EnvironmentManager\Services\EnvParser;
 use Pradeepdev\EnvironmentManager\Services\EnvWriter;
-use Pradeepdev\EnvironmentManager\Services\BackupManager;
-use Pradeepdev\EnvironmentManager\Services\AuditLogger;
-use Pradeepdev\EnvironmentManager\Services\CacheManager;
-use Pradeepdev\EnvironmentManager\Services\SensitivityDetector;
-use Pradeepdev\EnvironmentManager\Services\VersionHistory;
-use Pradeepdev\EnvironmentManager\Services\DiffEngine;
-use Pradeepdev\EnvironmentManager\Services\ValidationEngine;
 use Pradeepdev\EnvironmentManager\Services\ExportFormatter;
 use Pradeepdev\EnvironmentManager\Services\ImportProcessor;
 use Pradeepdev\EnvironmentManager\Services\NotificationDispatcher;
-use Pradeepdev\EnvironmentManager\EnvManager;
+use Pradeepdev\EnvironmentManager\Services\SensitivityDetector;
+use Pradeepdev\EnvironmentManager\Services\ValidationEngine;
+use Pradeepdev\EnvironmentManager\Services\VersionHistory;
 
 class EnvironmentManagerServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/environment-manager.php',
-            'environment-manager'
+            __DIR__.'/../config/environment-manager.php',
+            'environment-manager',
         );
 
         $this->app->singleton(SensitivityDetector::class, function ($app) {
             return new SensitivityDetector(
-                config('environment-manager.masking_patterns', [])
+                config('environment-manager.masking_patterns', []),
             );
         });
 
         $this->app->singleton(EnvParser::class, function ($app) {
-            return new EnvParser();
+            return new EnvParser;
         });
 
         $this->app->singleton(EnvWriter::class, function ($app) {
-            return new EnvWriter();
+            return new EnvWriter;
         });
 
         $this->app->singleton(AuditLogger::class, function ($app) {
-            return new AuditLogger();
+            return new AuditLogger;
         });
 
         $this->app->singleton(CacheManager::class, function ($app) {
             return new CacheManager(
                 config('environment-manager.cache_commands', []),
-                config('environment-manager.cache_after_save', true)
+                config('environment-manager.cache_after_save', true),
             );
         });
 
@@ -66,42 +65,42 @@ class EnvironmentManagerServiceProvider extends ServiceProvider
             return new BackupManager(
                 config('environment-manager.backup_path', storage_path('env-backups')),
                 config('environment-manager.backup_retention', 20),
-                config('environment-manager.backup_encryption', false)
+                config('environment-manager.backup_encryption', false),
             );
         });
 
         $this->app->singleton(ValidationEngine::class, function ($app) {
             return new ValidationEngine(
-                config('environment-manager.validation_rules', [])
+                config('environment-manager.validation_rules', []),
             );
         });
 
         $this->app->singleton(VersionHistory::class, function ($app) {
             return new VersionHistory(
-                $app->make(AuditLogger::class)
+                $app->make(AuditLogger::class),
             );
         });
 
         $this->app->singleton(DiffEngine::class, function ($app) {
-            return new DiffEngine();
+            return new DiffEngine;
         });
 
         $this->app->singleton(ExportFormatter::class, function ($app) {
             return new ExportFormatter(
-                $app->make(SensitivityDetector::class)
+                $app->make(SensitivityDetector::class),
             );
         });
 
         $this->app->singleton(ImportProcessor::class, function ($app) {
             return new ImportProcessor(
                 $app->make(EnvParser::class),
-                $app->make(ValidationEngine::class)
+                $app->make(ValidationEngine::class),
             );
         });
 
         $this->app->singleton(NotificationDispatcher::class, function ($app) {
             return new NotificationDispatcher(
-                config('environment-manager.notifications', [])
+                config('environment-manager.notifications', []),
             );
         });
 
@@ -115,7 +114,7 @@ class EnvironmentManagerServiceProvider extends ServiceProvider
                 $app->make(ValidationEngine::class),
                 $app->make(SensitivityDetector::class),
                 $app->make(AuditLogger::class),
-                $app->make(NotificationDispatcher::class)
+                $app->make(NotificationDispatcher::class),
             );
         });
 
@@ -129,34 +128,34 @@ class EnvironmentManagerServiceProvider extends ServiceProvider
             $this->registerCommands();
         }
 
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         if (config('environment-manager.enable_ui', true)) {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
-            $this->loadViewsFrom(__DIR__ . '/../resources/views', 'environment-manager');
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+            $this->loadViewsFrom(__DIR__.'/../resources/views', 'environment-manager');
         }
 
         if (config('environment-manager.enable_api', true)) {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+            $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         }
     }
 
     protected function publishAssets(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/environment-manager.php' => config_path('environment-manager.php'),
+            __DIR__.'/../config/environment-manager.php' => config_path('environment-manager.php'),
         ], 'environment-manager-config');
 
         $this->publishes([
-            __DIR__ . '/../database/migrations' => database_path('migrations'),
+            __DIR__.'/../database/migrations' => database_path('migrations'),
         ], 'environment-manager-migrations');
 
         $this->publishes([
-            __DIR__ . '/../resources/views' => resource_path('views/vendor/environment-manager'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/environment-manager'),
         ], 'environment-manager-views');
 
         $this->publishes([
-            __DIR__ . '/../resources/assets' => public_path('vendor/environment-manager'),
+            __DIR__.'/../resources/assets' => public_path('vendor/environment-manager'),
         ], 'environment-manager-assets');
     }
 

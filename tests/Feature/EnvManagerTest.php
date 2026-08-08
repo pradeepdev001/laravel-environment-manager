@@ -92,13 +92,13 @@ it('throws ValidationException for bulk set with invalid value', function () {
 
 it('throws for invalid key format', function () {
     $this->manager->set('invalid key', 'value');
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 it('creates backup before every write', function () {
     $backupDir = config('environment-manager.backup_path');
     $this->manager->set('NEW_VAR', 'test');
 
-    $backups = glob($backupDir . '/env_backup_*.env*');
+    $backups = glob($backupDir.'/env_backup_*.env*');
     expect($backups)->not->toBeEmpty();
 });
 

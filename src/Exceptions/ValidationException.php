@@ -10,7 +10,7 @@ class ValidationException extends RuntimeException
 {
     public function __construct(
         private readonly array $errors,
-        string $message = 'Environment variable validation failed.'
+        string $message = 'Environment variable validation failed.',
     ) {
         parent::__construct($message);
     }

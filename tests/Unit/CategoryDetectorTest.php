@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pradeepdev\EnvironmentManager\Services\CategoryDetector;
 
 beforeEach(function () {
-    $this->detector = new CategoryDetector();
+    $this->detector = new CategoryDetector;
 });
 
 it('detects Application category', function () {

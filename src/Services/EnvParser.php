@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pradeepdev\EnvironmentManager\Services;
 
+use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\Facades\Log;
 use Pradeepdev\EnvironmentManager\Data\EnvLine;
 use Pradeepdev\EnvironmentManager\Exceptions\EnvFileNotFoundException;
 
@@ -38,7 +40,7 @@ class EnvParser
      */
     public function parseContents(string $contents): array
     {
-        $lines = [];
+        $lines    = [];
         $rawLines = explode("\n", $contents);
         // If file ends with \n, last element will be empty — we keep it to preserve the trailing newline
         $lineNumber = 0;
@@ -53,6 +55,7 @@ class EnvParser
                     type: EnvLine::TYPE_BLANK,
                     raw: $raw,
                 );
+
                 continue;
             }
 
@@ -62,6 +65,7 @@ class EnvParser
                     type: EnvLine::TYPE_COMMENT,
                     raw: $raw,
                 );
+
                 continue;
             }
 
@@ -78,6 +82,7 @@ class EnvParser
                         quoteStyle: $quoteStyle,
                         inlineComment: $inlineComment,
                     );
+
                     continue;
                 }
             }
@@ -112,10 +117,10 @@ class EnvParser
             return [null, '', null, null];
         }
 
-        $rest = substr($trimmed, $eqPos + 1);
-        $quoteStyle = null;
+        $rest          = substr($trimmed, $eqPos + 1);
+        $quoteStyle    = null;
         $inlineComment = null;
-        $value = '';
+        $value         = '';
 
         if ($rest === '') {
             return [$key, '', null, null];
@@ -123,13 +128,13 @@ class EnvParser
 
         // Quoted value
         if ($rest[0] === '"' || $rest[0] === "'") {
-            $quote = $rest[0];
+            $quote    = $rest[0];
             $closePos = $this->findClosingQuote($rest, $quote);
 
             if ($closePos !== false) {
-                $value = substr($rest, 1, $closePos - 1);
+                $value      = substr($rest, 1, $closePos - 1);
                 $quoteStyle = $quote;
-                $after = trim(substr($rest, $closePos + 1));
+                $after      = trim(substr($rest, $closePos + 1));
                 if (str_starts_with($after, '#')) {
                     $inlineComment = $after;
                 }
@@ -144,7 +149,7 @@ class EnvParser
         // Unquoted value — strip inline comment
         $commentPos = strpos($rest, ' #');
         if ($commentPos !== false) {
-            $value = rtrim(substr($rest, 0, $commentPos));
+            $value         = rtrim(substr($rest, 0, $commentPos));
             $inlineComment = trim(substr($rest, $commentPos + 1));
         } else {
             $value = $rest;
@@ -162,6 +167,7 @@ class EnvParser
         for ($i = 1; $i < $len; $i++) {
             if ($str[$i] === '\\') {
                 $i++; // skip escaped character
+
                 continue;
             }
             if ($str[$i] === $quote) {
@@ -206,8 +212,8 @@ class EnvParser
      */
     private function warn(string $message): void
     {
-        if (class_exists(\Illuminate\Support\Facades\Log::class) && \Illuminate\Support\Facades\Facade::getFacadeApplication() !== null) {
-            \Illuminate\Support\Facades\Log::warning($message);
+        if (class_exists(Log::class) && Facade::getFacadeApplication() !== null) {
+            Log::warning($message);
         } else {
             error_log($message);
         }

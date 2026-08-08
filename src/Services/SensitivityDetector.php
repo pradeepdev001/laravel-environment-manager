@@ -29,7 +29,7 @@ class SensitivityDetector
     public function __construct(array $extraPatterns = [])
     {
         $this->patterns = array_unique(
-            array_merge(self::$defaultPatterns, $extraPatterns)
+            array_merge(self::$defaultPatterns, $extraPatterns),
         );
     }
 
@@ -57,11 +57,11 @@ class SensitivityDetector
         }
 
         // Convert glob pattern to regex
-        $regex = '/^' . str_replace(
+        $regex = '/^'.str_replace(
             ['\\*', '\\?'],
             ['.*', '.'],
-            preg_quote($pattern, '/')
-        ) . '$/';
+            preg_quote($pattern, '/'),
+        ).'$/';
 
         return (bool) preg_match($regex, $key);
     }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Pradeepdev\EnvironmentManager\Services\SensitivityDetector;
 
 beforeEach(function () {
-    $this->detector = new SensitivityDetector();
+    $this->detector = new SensitivityDetector;
 });
 
 it('flags APP_KEY as sensitive', function () {

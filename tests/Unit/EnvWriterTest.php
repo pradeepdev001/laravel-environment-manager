@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-use Pradeepdev\EnvironmentManager\Data\EnvLine;
-use Pradeepdev\EnvironmentManager\Exceptions\FileLockException;
 use Pradeepdev\EnvironmentManager\Services\EnvParser;
 use Pradeepdev\EnvironmentManager\Services\EnvWriter;
 
 beforeEach(function () {
-    $this->parser  = new EnvParser();
-    $this->writer  = new EnvWriter();
+    $this->parser  = new EnvParser;
+    $this->writer  = new EnvWriter;
     $this->tmpFile = tempnam(sys_get_temp_dir(), 'env_test_');
 });
 

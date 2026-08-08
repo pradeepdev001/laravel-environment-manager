@@ -60,7 +60,7 @@ class NotificationDispatcher
                     "Action: {$payload['action']}\nKey: {$payload['key']}\nEnvironment: {$payload['environment']}\nTimestamp: {$payload['timestamp']}",
                     function ($msg) use ($recipient, $subject) {
                         $msg->to($recipient)->subject($subject);
-                    }
+                    },
                 );
             }
         } catch (\Throwable $e) {

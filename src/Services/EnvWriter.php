@@ -10,6 +10,7 @@ use Pradeepdev\EnvironmentManager\Exceptions\FileLockException;
 class EnvWriter
 {
     private const LOCK_RETRIES = 3;
+
     private const LOCK_WAIT_MS = 100;
 
     /**
@@ -102,7 +103,7 @@ class EnvWriter
         foreach ($lines as $i => $line) {
             if ($line->isVariable() && $line->key === $key) {
                 $lines[$i] = $line->withValue($value);
-                $found = true;
+                $found     = true;
                 break;
             }
         }
@@ -128,7 +129,7 @@ class EnvWriter
     public function deleteVariable(array $lines, string $key): array
     {
         return array_values(
-            array_filter($lines, fn (EnvLine $l) => ! ($l->isVariable() && $l->key === $key))
+            array_filter($lines, fn (EnvLine $l) => ! ($l->isVariable() && $l->key === $key)),
         );
     }
 
@@ -142,8 +143,8 @@ class EnvWriter
     {
         foreach ($lines as $i => $line) {
             if ($line->isVariable() && $line->key === $oldKey) {
-                $newRaw = "{$newKey}=" . ($line->quoteStyle
-                    ? $line->quoteStyle . $line->value . $line->quoteStyle
+                $newRaw = "{$newKey}=".($line->quoteStyle
+                    ? $line->quoteStyle.$line->value.$line->quoteStyle
                     : $line->value);
 
                 $lines[$i] = new EnvLine(

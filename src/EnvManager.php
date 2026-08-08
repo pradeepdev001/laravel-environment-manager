@@ -35,7 +35,7 @@ class EnvManager
         private readonly NotificationDispatcher $notificationDispatcher,
     ) {
         $this->categoryDetector = new CategoryDetector(
-            config('environment-manager.categories', [])
+            config('environment-manager.categories', []),
         );
     }
 
@@ -84,11 +84,11 @@ class EnvManager
         $this->validateKeyFormat($key);
         $this->validator->validateOrFail([$key => $value]);
 
-        $envPath = $this->getEnvPath();
-        $lines   = $this->parser->parseFile($envPath);
-        $keyMap  = $this->parser->toKeyMap($lines);
-        $oldValue = $keyMap[$key]?->value ?? null;
-        $action  = array_key_exists($key, $keyMap) ? 'update' : 'create';
+        $envPath   = $this->getEnvPath();
+        $lines     = $this->parser->parseFile($envPath);
+        $keyMap    = $this->parser->toKeyMap($lines);
+        $oldValue  = $keyMap[$key]?->value ?? null;
+        $action    = array_key_exists($key, $keyMap) ? 'update' : 'create';
         $sensitive = $this->sensitivityDetector->isSensitive($key);
 
         // Backup before change
@@ -126,10 +126,10 @@ class EnvManager
         ?string $reason = null,
         string $source = 'ui',
     ): void {
-        $envPath = $this->getEnvPath();
-        $lines   = $this->parser->parseFile($envPath);
-        $keyMap  = $this->parser->toKeyMap($lines);
-        $oldLine = $keyMap[$key] ?? null;
+        $envPath   = $this->getEnvPath();
+        $lines     = $this->parser->parseFile($envPath);
+        $keyMap    = $this->parser->toKeyMap($lines);
+        $oldLine   = $keyMap[$key] ?? null;
         $sensitive = $this->sensitivityDetector->isSensitive($key);
 
         // Backup before change
@@ -165,10 +165,10 @@ class EnvManager
     ): void {
         $this->validateKeyFormat($newKey);
 
-        $envPath = $this->getEnvPath();
-        $lines   = $this->parser->parseFile($envPath);
-        $keyMap  = $this->parser->toKeyMap($lines);
-        $value   = $keyMap[$oldKey]?->value ?? '';
+        $envPath   = $this->getEnvPath();
+        $lines     = $this->parser->parseFile($envPath);
+        $keyMap    = $this->parser->toKeyMap($lines);
+        $value     = $keyMap[$oldKey]?->value ?? '';
         $sensitive = $this->sensitivityDetector->isSensitive($oldKey)
                   || $this->sensitivityDetector->isSensitive($newKey);
 
@@ -194,6 +194,7 @@ class EnvManager
      * Bulk set multiple variables at once.
      *
      * @param  array<string, string>  $variables
+     *
      * @throws ValidationException
      */
     public function bulkSet(
@@ -227,7 +228,7 @@ class EnvManager
 
         foreach ($variables as $key => $value) {
             $this->notificationDispatcher->dispatch(
-                'bulk_update', $key, $this->sensitivityDetector->isSensitive($key)
+                'bulk_update', $key, $this->sensitivityDetector->isSensitive($key),
             );
         }
 
@@ -256,7 +257,7 @@ class EnvManager
      */
     private function lineToVariable(EnvLine $line): EnvVariable
     {
-        $key       = $line->key ?? '';
+        $key       = $line->key   ?? '';
         $value     = $line->value ?? '';
         $sensitive = $this->sensitivityDetector->isSensitive($key);
         $category  = $this->categoryDetector->detect($key);
@@ -292,7 +293,7 @@ class EnvManager
     {
         if (! preg_match('/^[A-Z_][A-Z0-9_]*$/', $key)) {
             throw new \InvalidArgumentException(
-                "Invalid env key format: [{$key}]. Keys must match [A-Z_][A-Z0-9_]*."
+                "Invalid env key format: [{$key}]. Keys must match [A-Z_][A-Z0-9_]*.",
             );
         }
     }

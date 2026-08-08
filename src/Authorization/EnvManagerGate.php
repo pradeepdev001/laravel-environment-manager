@@ -4,20 +4,25 @@ declare(strict_types=1);
 
 namespace Pradeepdev\EnvironmentManager\Authorization;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-
 class EnvManagerGate
 {
-    public const PERMISSION_VIEW_ENV      = 'view-env';
-    public const PERMISSION_EDIT_ENV      = 'edit-env';
-    public const PERMISSION_DELETE_ENV    = 'delete-env';
-    public const PERMISSION_BACKUP_ENV    = 'backup-env';
-    public const PERMISSION_RESTORE_ENV   = 'restore-env';
+    public const PERMISSION_VIEW_ENV = 'view-env';
+
+    public const PERMISSION_EDIT_ENV = 'edit-env';
+
+    public const PERMISSION_DELETE_ENV = 'delete-env';
+
+    public const PERMISSION_BACKUP_ENV = 'backup-env';
+
+    public const PERMISSION_RESTORE_ENV = 'restore-env';
+
     public const PERMISSION_REVEAL_SECRETS = 'reveal-secrets';
 
     public const ROLE_SUPER_ADMIN = 'super_admin';
-    public const ROLE_ADMIN       = 'admin';
-    public const ROLE_READ_ONLY   = 'read_only';
+
+    public const ROLE_ADMIN = 'admin';
+
+    public const ROLE_READ_ONLY = 'read_only';
 
     private static array $rolePermissions = [
         self::ROLE_SUPER_ADMIN => [
@@ -86,6 +91,7 @@ class EnvManagerGate
             if ($role === self::ROLE_ADMIN) {
                 return (bool) config('environment-manager.admin_can_reveal_secrets', false);
             }
+
             return false; // read_only and others
         }
 

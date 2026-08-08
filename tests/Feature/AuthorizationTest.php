@@ -2,18 +2,21 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Auth\User;
 use Pradeepdev\EnvironmentManager\Authorization\EnvManagerGate;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 // Minimal stub user that implements Authenticatable
-class StubUser extends \Illuminate\Foundation\Auth\User
+class StubUser extends User
 {
     public string $env_manager_role = 'admin';
+
     public int $stubId = 1;
 
     public function __construct(string $role = 'admin', int $id = 1)
     {
         $this->env_manager_role = $role;
-        $this->stubId = $id;
+        $this->stubId           = $id;
     }
 
     public function getKey(): int
@@ -28,7 +31,7 @@ class StubUser extends \Illuminate\Foundation\Auth\User
 }
 
 beforeEach(function () {
-    $this->gate = new EnvManagerGate();
+    $this->gate = new EnvManagerGate;
     config(['environment-manager.bypass_auth_in_local' => false]);
     config(['app.env' => 'testing']);
     config(['environment-manager.allowed_users' => null]);
@@ -126,7 +129,7 @@ it('custom authorization_callback overrides role system', function () {
 it('authorize() throws 403 when permission denied', function () {
     $user = new StubUser('read_only');
     $this->gate->authorize($user, EnvManagerGate::PERMISSION_EDIT_ENV);
-})->throws(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+})->throws(HttpException::class);
 
 // Bypass in local
 it('bypass_auth_in_local grants all permissions in local env', function () {

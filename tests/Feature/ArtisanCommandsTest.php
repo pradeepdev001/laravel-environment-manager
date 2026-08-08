@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use Pradeepdev\EnvironmentManager\EnvManager;
 
 beforeEach(function () {
     $this->writeTestEnv("APP_NAME=Laravel\nAPP_ENV=local\nDB_PASSWORD=secret\nDB_CONNECTION=mysql\n");
@@ -53,7 +54,7 @@ it('env-manager:set creates a new variable', function () {
     $this->artisan('env-manager:set', ['key' => 'TEST_VAR', 'value' => 'test_value'])
         ->assertSuccessful();
 
-    expect(app(\Pradeepdev\EnvironmentManager\EnvManager::class)->get('TEST_VAR')?->rawValue)
+    expect(app(EnvManager::class)->get('TEST_VAR')?->rawValue)
         ->toBe('test_value');
 });
 
@@ -61,7 +62,7 @@ it('env-manager:set updates an existing variable', function () {
     $this->artisan('env-manager:set', ['key' => 'APP_NAME', 'value' => 'Updated'])
         ->assertSuccessful();
 
-    expect(app(\Pradeepdev\EnvironmentManager\EnvManager::class)->get('APP_NAME')?->rawValue)
+    expect(app(EnvManager::class)->get('APP_NAME')?->rawValue)
         ->toBe('Updated');
 });
 
@@ -83,7 +84,7 @@ it('env-manager:delete removes a variable with --force', function () {
     $this->artisan('env-manager:delete', ['key' => 'APP_ENV', '--force' => true])
         ->assertSuccessful();
 
-    expect(app(\Pradeepdev\EnvironmentManager\EnvManager::class)->get('APP_ENV'))->toBeNull();
+    expect(app(EnvManager::class)->get('APP_ENV'))->toBeNull();
 });
 
 it('env-manager:delete fails for missing key', function () {
@@ -113,8 +114,8 @@ it('env-manager:validate fails for invalid env', function () {
 
 // env-manager:compare
 it('env-manager:compare shows differences between two files', function () {
-    $file1 = sys_get_temp_dir() . '/env_compare_a_' . getmypid() . '.env';
-    $file2 = sys_get_temp_dir() . '/env_compare_b_' . getmypid() . '.env';
+    $file1 = sys_get_temp_dir().'/env_compare_a_'.getmypid().'.env';
+    $file2 = sys_get_temp_dir().'/env_compare_b_'.getmypid().'.env';
 
     file_put_contents($file1, "APP_NAME=Laravel\nNEW_KEY=value\n");
     file_put_contents($file2, "APP_NAME=Changed\n");
@@ -127,8 +128,8 @@ it('env-manager:compare shows differences between two files', function () {
 });
 
 it('env-manager:compare reports identical files', function () {
-    $file1 = sys_get_temp_dir() . '/env_same_a_' . getmypid() . '.env';
-    $file2 = sys_get_temp_dir() . '/env_same_b_' . getmypid() . '.env';
+    $file1 = sys_get_temp_dir().'/env_same_a_'.getmypid().'.env';
+    $file2 = sys_get_temp_dir().'/env_same_b_'.getmypid().'.env';
 
     file_put_contents($file1, "APP_NAME=Laravel\n");
     file_put_contents($file2, "APP_NAME=Laravel\n");

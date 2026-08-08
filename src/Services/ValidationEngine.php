@@ -23,7 +23,7 @@ class ValidationEngine
      */
     public function validateOne(string $key, string $value): array
     {
-        $errors = [];
+        $errors   = [];
         $keyRules = $this->rules[$key] ?? [];
 
         foreach ($keyRules as $rule) {
@@ -61,6 +61,7 @@ class ValidationEngine
      * Validate and throw if there are any errors.
      *
      * @param  array<string, string>  $variables
+     *
      * @throws ValidationException
      */
     public function validateOrFail(array $variables): void
@@ -93,6 +94,7 @@ class ValidationEngine
             if (filter_var($value, FILTER_VALIDATE_URL) === false) {
                 return "{$key} must be a valid URL.";
             }
+
             return null;
         }
 
@@ -100,6 +102,7 @@ class ValidationEngine
             if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
                 return "{$key} must be a valid email address.";
             }
+
             return null;
         }
 
@@ -107,6 +110,7 @@ class ValidationEngine
             if (! ctype_digit(ltrim($value, '-'))) {
                 return "{$key} must be an integer.";
             }
+
             return null;
         }
 
@@ -115,14 +119,16 @@ class ValidationEngine
             if (! in_array(strtolower($value), $valid, true)) {
                 return "{$key} must be a boolean value (true/false/1/0).";
             }
+
             return null;
         }
 
         if (str_starts_with($rule, 'enum:')) {
             $allowed = explode(',', substr($rule, 5));
             if (! in_array($value, $allowed, true)) {
-                return "{$key} must be one of: " . implode(', ', $allowed) . '.';
+                return "{$key} must be one of: ".implode(', ', $allowed).'.';
             }
+
             return null;
         }
 
@@ -131,6 +137,7 @@ class ValidationEngine
             if (is_numeric($value) && (int) $value < $min) {
                 return "{$key} must be at least {$min}.";
             }
+
             return null;
         }
 
@@ -139,6 +146,7 @@ class ValidationEngine
             if (is_numeric($value) && (int) $value > $max) {
                 return "{$key} must not exceed {$max}.";
             }
+
             return null;
         }
 
@@ -147,6 +155,7 @@ class ValidationEngine
             if (! preg_match($pattern, $value)) {
                 return "{$key} format is invalid.";
             }
+
             return null;
         }
 

@@ -6,8 +6,8 @@ use Pradeepdev\EnvironmentManager\Services\DiffEngine;
 use Pradeepdev\EnvironmentManager\Services\SensitivityDetector;
 
 beforeEach(function () {
-    $this->engine   = new DiffEngine();
-    $this->detector = new SensitivityDetector();
+    $this->engine   = new DiffEngine;
+    $this->detector = new SensitivityDetector;
 });
 
 it('detects added keys', function () {

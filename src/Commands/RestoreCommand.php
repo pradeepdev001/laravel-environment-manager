@@ -26,6 +26,7 @@ class RestoreCommand extends Command
 
         if (empty($backups)) {
             $this->warn('No backups available.');
+
             return self::SUCCESS;
         }
 
@@ -33,21 +34,23 @@ class RestoreCommand extends Command
 
         if ($backupName === null) {
             // Interactive selection
-            $choices = array_column($backups, 'filename');
+            $choices    = array_column($backups, 'filename');
             $backupName = $this->choice('Select a backup to restore:', $choices);
         }
 
-        $backupPath = rtrim(config('environment-manager.backup_path'), '/') . '/' . $backupName;
+        $backupPath = rtrim(config('environment-manager.backup_path'), '/').'/'.$backupName;
 
         if (! file_exists($backupPath)) {
             $this->error("Backup [{$backupName}] not found.");
+
             return self::FAILURE;
         }
 
         if (! $this->option('force') && ! $this->confirm(
-            "This will overwrite your current .env with [{$backupName}]. Continue?"
+            "This will overwrite your current .env with [{$backupName}]. Continue?",
         )) {
             $this->line('Aborted.');
+
             return self::SUCCESS;
         }
 

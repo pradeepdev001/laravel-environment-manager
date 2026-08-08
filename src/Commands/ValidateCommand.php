@@ -29,12 +29,13 @@ class ValidateCommand extends Command
                 $rows[] = [$key, $value ?: '(empty)', '<fg=green>✓ Pass</>', ''];
             } else {
                 $hasErrors = true;
-                $rows[] = [$key, $value ?: '(empty)', '<fg=red>✗ Fail</>', implode(' | ', $errors)];
+                $rows[]    = [$key, $value ?: '(empty)', '<fg=red>✗ Fail</>', implode(' | ', $errors)];
             }
         }
 
         if (empty($rows)) {
             $this->info('No validation rules configured.');
+
             return self::SUCCESS;
         }
 
@@ -42,10 +43,12 @@ class ValidateCommand extends Command
 
         if ($hasErrors) {
             $this->error('Validation failed. See errors above.');
+
             return self::FAILURE;
         }
 
         $this->info('All variables pass validation.');
+
         return self::SUCCESS;
     }
 }

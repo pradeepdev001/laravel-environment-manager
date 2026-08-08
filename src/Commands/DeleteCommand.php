@@ -22,11 +22,13 @@ class DeleteCommand extends Command
 
         if ($manager->get($key) === null) {
             $this->error("Variable [{$key}] not found in .env file.");
+
             return self::FAILURE;
         }
 
         if (! $this->option('force') && ! $this->confirm("Are you sure you want to delete [{$key}]?")) {
             $this->line('Aborted.');
+
             return self::SUCCESS;
         }
 

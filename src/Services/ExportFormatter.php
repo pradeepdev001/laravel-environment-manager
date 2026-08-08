@@ -24,12 +24,12 @@ class ExportFormatter
             $displayValue = $this->detector->mask($key, $value, $reveal);
             // Quote values that contain spaces or special chars
             if (preg_match('/[\s#"\'=]/', $displayValue)) {
-                $displayValue = '"' . addcslashes($displayValue, '"\\') . '"';
+                $displayValue = '"'.addcslashes($displayValue, '"\\').'"';
             }
             $lines[] = "{$key}={$displayValue}";
         }
 
-        return implode("\n", $lines) . "\n";
+        return implode("\n", $lines)."\n";
     }
 
     /**

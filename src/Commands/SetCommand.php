@@ -44,6 +44,7 @@ class SetCommand extends Command
             return self::SUCCESS;
         } catch (\InvalidArgumentException $e) {
             $this->error($e->getMessage());
+
             return self::FAILURE;
         } catch (ValidationException $e) {
             foreach ($e->getErrors() as $errorKey => $messages) {
@@ -51,6 +52,7 @@ class SetCommand extends Command
                     $this->error("[{$errorKey}] {$msg}");
                 }
             }
+
             return self::FAILURE;
         }
     }

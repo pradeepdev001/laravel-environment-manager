@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+
+use Illuminate\Support\Facades\Artisan;
 use Pradeepdev\EnvironmentManager\EnvManager;
 
 beforeEach(function () {
@@ -9,21 +11,24 @@ beforeEach(function () {
 
 // env-manager:list
 it('env-manager:list displays all variables', function () {
-    $this->artisan('env-manager:list')
-        ->assertSuccessful()
-        ->expectsOutputToContain('APP_NAME');
+    $exitCode = Artisan::call('env-manager:list');
+
+    expect($exitCode)->toBe(0);
+    expect(Artisan::output())->toContain('APP_NAME');
 });
 
 it('env-manager:list filters by category', function () {
-    $this->artisan('env-manager:list', ['--category' => 'Database'])
-        ->assertSuccessful()
-        ->expectsOutputToContain('DB_CONNECTION');
+    $exitCode = Artisan::call('env-manager:list', ['--category' => 'Database']);
+
+    expect($exitCode)->toBe(0);
+    expect(Artisan::output())->toContain('DB_CONNECTION');
 });
 
 it('env-manager:list filters by search', function () {
-    $this->artisan('env-manager:list', ['--search' => 'APP'])
-        ->assertSuccessful()
-        ->expectsOutputToContain('APP_NAME');
+    $exitCode = Artisan::call('env-manager:list', ['--search' => 'APP']);
+
+    expect($exitCode)->toBe(0);
+    expect(Artisan::output())->toContain('APP_NAME');
 });
 
 it('env-manager:list outputs json format', function () {
@@ -33,15 +38,17 @@ it('env-manager:list outputs json format', function () {
 
 // env-manager:get
 it('env-manager:get displays a variable', function () {
-    $this->artisan('env-manager:get', ['key' => 'APP_NAME'])
-        ->assertSuccessful()
-        ->expectsOutputToContain('APP_NAME');
+    $exitCode = Artisan::call('env-manager:get', ['key' => 'APP_NAME']);
+
+    expect($exitCode)->toBe(0);
+    expect(Artisan::output())->toContain('APP_NAME');
 });
 
 it('env-manager:get masks sensitive variable', function () {
-    $this->artisan('env-manager:get', ['key' => 'DB_PASSWORD'])
-        ->assertSuccessful()
-        ->expectsOutputToContain('••••••••');
+    $exitCode = Artisan::call('env-manager:get', ['key' => 'DB_PASSWORD']);
+
+    expect($exitCode)->toBe(0);
+    expect(Artisan::output())->toContain('••••••••');
 });
 
 it('env-manager:get fails for missing key', function () {
@@ -94,9 +101,10 @@ it('env-manager:delete fails for missing key', function () {
 
 // env-manager:backup
 it('env-manager:backup creates a backup file', function () {
-    $this->artisan('env-manager:backup')
-        ->assertSuccessful()
-        ->expectsOutputToContain('Backup created');
+    $exitCode = Artisan::call('env-manager:backup');
+
+    expect($exitCode)->toBe(0);
+    expect(Artisan::output())->toContain('Backup created successfully.');
 });
 
 // env-manager:validate
@@ -134,9 +142,10 @@ it('env-manager:compare reports identical files', function () {
     file_put_contents($file1, "APP_NAME=Laravel\n");
     file_put_contents($file2, "APP_NAME=Laravel\n");
 
-    $this->artisan('env-manager:compare', ['env1' => $file1, 'env2' => $file2])
-        ->assertSuccessful()
-        ->expectsOutputToContain('identical');
+    $exitCode = Artisan::call('env-manager:compare', ['env1' => $file1, 'env2' => $file2]);
+
+    expect($exitCode)->toBe(0);
+    expect(Artisan::output())->toContain('identical');
 
     @unlink($file1);
     @unlink($file2);
